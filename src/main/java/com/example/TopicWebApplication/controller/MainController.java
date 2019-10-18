@@ -1,8 +1,8 @@
 package com.example.TopicWebApplication.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+//import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-public class MainController {
-
-}
+//@RestController
+//public class MainController {
+//
+//}

@@ -48,7 +48,7 @@ public class Topic {
 	private int state;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "comment_topic", joinColumns = @JoinColumn(referencedColumnName = "topicid_topic"
-		), inverseJoinColumns = @JoinColumn(referencedColumnName = "commentid_comment"))
-	private Set<Comment> comment;
+	@JoinTable(name = "comment_topic", joinColumns = @JoinColumn(referencedColumnName = "id_topic"
+		), inverseJoinColumns = @JoinColumn(referencedColumnName = "id_comment"))
+	private Set<Comment> commentId;
 }

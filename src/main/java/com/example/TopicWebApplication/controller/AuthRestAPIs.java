@@ -63,11 +63,12 @@ public class AuthRestAPIs {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerAccount(@Valid @RequestBody SignUpForm signUpForm) {
+		
 		if(accountRepository.existsByUsername(signUpForm.getUsername())) {
 			return new ResponseEntity<>(new ResponseMessage("Username is already taken !!!"), HttpStatus.BAD_REQUEST);
 		}
 		
-		if (accountRepository.existsByUsername(signUpForm.getEmail())) {
+		if (accountRepository.existsByEmail(signUpForm.getEmail())) {
 			return new ResponseEntity<>(new ResponseMessage("Email is already taken !!!"), HttpStatus.BAD_REQUEST);
 		}
 		

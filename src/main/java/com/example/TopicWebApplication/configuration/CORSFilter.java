@@ -1,4 +1,4 @@
-package com.example.TopicWebAppication.configuration;
+package com.example.TopicWebApplication.configuration;
 
 import java.io.IOException;
 
@@ -10,9 +10,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class CORSFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res,

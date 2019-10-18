@@ -58,15 +58,12 @@ public class Account {
 	@Length(min = 5, message = "Please enter password at least 8 characters")
 	private String password;
 	
-	@Column(name = "admin")
-	private Boolean admin;
-	
 	@Column(name = "active")
 	private Boolean active;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "account_role", joinColumns = @JoinColumn(referencedColumnName = "accountid_account"), 
-	inverseJoinColumns = @JoinColumn(referencedColumnName = "roleid_role"))
+	@JoinTable(name = "account_role", joinColumns = @JoinColumn(referencedColumnName = "id_account"), 
+	inverseJoinColumns = @JoinColumn(referencedColumnName = "id_role"))
 	private Set<Role> roles;
 
 	public Account(@NotEmpty(message = "Please provide your Username") @Length(max = 50) String username, String name,
