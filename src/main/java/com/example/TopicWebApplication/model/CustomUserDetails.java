@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.Data;
 
 @Data
@@ -23,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
 
     private String email;
 
-    @JsonIgnore
+    @JsonProperty(access = Access.WRITE_ONLY)
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;

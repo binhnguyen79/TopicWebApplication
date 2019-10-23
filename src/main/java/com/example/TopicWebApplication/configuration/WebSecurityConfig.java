@@ -1,5 +1,14 @@
 package com.example.TopicWebApplication.configuration;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.anyRequest().authenticated()
 			.and()
 			.formLogin()
-			.defaultSuccessUrl("/home").permitAll()
+			.defaultSuccessUrl("/").permitAll()
 			.and()
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -79,4 +88,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+
 }
