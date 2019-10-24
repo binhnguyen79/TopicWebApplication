@@ -21,6 +21,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.userinfo.CustomUserTypesOAuth2UserService;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.TopicWebApplication.jwt.JwtAuthEntryPoint;
@@ -36,6 +40,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	UserServices  userServices;
+	
+//	@Autowired
+//    private CustomUserTypesOAuth2UserService customOAuth2UserService;
+//
+//    @Autowired
+//    private OAuth2AuthenticationException oAuth2AuthenticationException;
+//
+//    @Autowired
+//    private OAuth2AuthenticationToken oAuth2AuthenticationToken;
+//    
+//    @Autowired
+//    private HttpSessionOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+
 	
 	@Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
@@ -56,6 +73,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 	
+	@Bean
+	public HttpSessionOAuth2AuthorizationRequestRepository httpSessionOAuth2AuthorizationRequestRepository() {
+		return new HttpSessionOAuth2AuthorizationRequestRepository();
+	}
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userServices)
@@ -72,7 +94,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.formLogin()
 			.defaultSuccessUrl("/").permitAll()
 			.and()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.logout().permitAll();
