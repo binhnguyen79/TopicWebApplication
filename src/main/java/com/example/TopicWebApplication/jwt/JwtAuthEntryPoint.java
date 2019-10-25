@@ -23,6 +23,10 @@ public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException e) 
                         		 throws IOException, ServletException {
     	
+		String authHeader = request.getHeader("Authorization");
+		
+		System.out.println("Request Header Receive 'Authorization': " + authHeader);
+    	
         logger.error("Unauthorized error. Message - {}", e.getMessage());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error -> Unauthorized");
     }

@@ -73,10 +73,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 	
-	@Bean
-	public HttpSessionOAuth2AuthorizationRequestRepository httpSessionOAuth2AuthorizationRequestRepository() {
-		return new HttpSessionOAuth2AuthorizationRequestRepository();
-	}
+//	@Bean
+//	public HttpSessionOAuth2AuthorizationRequestRepository httpSessionOAuth2AuthorizationRequestRepository() {
+//		return new HttpSessionOAuth2AuthorizationRequestRepository();
+//	}
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -86,28 +86,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-			.authorizeRequests()
-			.antMatchers("/api/auth/**").permitAll()
-			.anyRequest().authenticated()
-			.and()
-			.formLogin()
-			.defaultSuccessUrl("/").permitAll()
-			.and()
-			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-			.and()
-			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-			.and()
-			.logout().permitAll();
-		
 //		http.cors().and().csrf().disable()
 //			.authorizeRequests()
-//	        .antMatchers("/api/auth/**").permitAll()
-//	        .anyRequest().authenticated()
-//	        .and()
-//	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
-//	        .and()
-//	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//			.antMatchers("/api/user").permitAll()
+//			.antMatchers("/api/auth/**").permitAll()
+//			.anyRequest().authenticated()
+//			.and()
+//			.formLogin()
+//			.defaultSuccessUrl("/").permitAll()
+//			.and()
+//			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+//			.and()
+//			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//			.and()
+//			.logout().permitAll();
+		
+		http.cors().and().csrf().disable()
+			.authorizeRequests()
+	        .antMatchers("/api/auth/**").permitAll()
+	        .anyRequest().authenticated()
+	        .and()
+	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+	        .and()
+	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

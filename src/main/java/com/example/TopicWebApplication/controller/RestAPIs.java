@@ -14,6 +14,7 @@ import com.example.TopicWebApplication.model.Account;
 import com.example.TopicWebApplication.repository.AccountRepository;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class RestAPIs {
 	
 	@Autowired
@@ -34,6 +35,7 @@ public class RestAPIs {
 	@GetMapping("/api/user")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Account> getAccount(@RequestParam String username) {
+		
 		Account accountInfo = accountRepository.findByUsername(username);
 		return ResponseEntity.ok().body(accountInfo);
 	}

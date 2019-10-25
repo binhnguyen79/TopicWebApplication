@@ -58,9 +58,14 @@ public class AuthRestAPIs {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
 		String jwt = jwtProvider.generateJwtToken(authentication);
+		
 		CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 		
-		return ResponseEntity.ok(new JwtResponse(jwt, customUserDetails.getUsername(), customUserDetails.getAuthorities()));
+		JwtResponse headerResponse = new JwtResponse(jwt, customUserDetails.getUsername(), customUserDetails.getAuthorities());
+		
+		System.out.println("HeaderResponse: " + headerResponse.getAccessToken());
+		
+		return ResponseEntity.ok(headerResponse);
 	}
 	
 	@PostMapping("/signup")
