@@ -33,7 +33,6 @@ import com.example.TopicWebApplication.repository.RoleRepository;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*")
 public class AuthRestAPIs {
 	
 	@Autowired

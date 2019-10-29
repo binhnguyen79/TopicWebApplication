@@ -17,6 +17,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -54,6 +57,7 @@ public class Account {
 	private String email;
 	
 	@Column(name = "password")
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@NotEmpty(message = "Please enter your password")
 	@Length(min = 5, message = "Please enter password at least 8 characters")
 	private String password;
@@ -61,6 +65,7 @@ public class Account {
 	@Column(name = "active")
 	private Boolean active;
 	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_role", joinColumns = @JoinColumn(referencedColumnName = "id_account"), 
 	inverseJoinColumns = @JoinColumn(referencedColumnName = "id_role"))

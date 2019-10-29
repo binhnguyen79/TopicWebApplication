@@ -29,13 +29,13 @@ public class Topic {
 
 	@Id
 	@Column(name = "id_topic")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idTopic;
 	
 	@Column(name = "title")
 	private String title;
 	
-	@Column(name = "content")
+	@Column(name = "content", length = (int) Long.MAX_VALUE)
 	private String content;
 	
 	@Column(name = "creation_day")
