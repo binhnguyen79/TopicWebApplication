@@ -1,5 +1,7 @@
 package com.example.TopicWebApplication.controller;
 
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import com.example.TopicWebApplication.model.Account;
 import com.example.TopicWebApplication.model.Topic;
 import com.example.TopicWebApplication.repository.AccountRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
+
+import io.jsonwebtoken.lang.Collections;
 
 @RestController
 public class RestAPIs {
@@ -65,7 +69,14 @@ public class RestAPIs {
 	@GetMapping("/api/get-topic")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public List<Topic> getTopicMainPage() {
+		
 		return topicRepository.findAll();
 	}
 	
+	@GetMapping("/api/get-topic-by-key")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public List<Topic> getTopicByKeyWord(@RequestParam String key) {
+		
+		return topicRepository.findByTitle(key);
+	}
 }

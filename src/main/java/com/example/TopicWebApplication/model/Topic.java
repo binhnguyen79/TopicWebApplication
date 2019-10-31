@@ -17,12 +17,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "topic")
 public class Topic {
@@ -51,4 +53,5 @@ public class Topic {
 	@JoinTable(name = "comment_topic", joinColumns = @JoinColumn(referencedColumnName = "id_topic"
 		), inverseJoinColumns = @JoinColumn(referencedColumnName = "id_comment"))
 	private Set<Comment> commentId;
+	
 }
