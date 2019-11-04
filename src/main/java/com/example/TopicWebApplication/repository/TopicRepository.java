@@ -17,6 +17,9 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
 	List<Topic> findByCreatedBy(Long createdby);
 	List<Topic> findByCreationDay(Date creationday);
 	
-	@Query("SELECT t FROM Topic t ORDER BY creation_day DESC")
+	@Query("SELECT * FROM Topic ORDER BY creation_day DESC")
 	List<Topic> findAll();
+	
+	@Query("SELECT * FROM Topic WHERE created_by = :createdBy ORDER BY creation_day DESC")
+	List<Topic> findTopics(Long createdBy);
 }
