@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -93,16 +94,28 @@ public class RestAPIs {
 		return result;
 	}
 	
-	@SuppressWarnings("unlikely-arg-type")
 	@GetMapping("/api/get-account-by-admin")
 	@PreAuthorize("hasRole('ADMIN')")
-	public List<Account> getAccountByAdmin(@RequestParam String username) {
-		List<Account> result = null;
-		
-		if (accountRepository.findByUsername(username).getRoles().contains("ROLE_ADMIN")) {
-			result = accountRepository.findAll();
-		}
-		
-		return result;
+	public List<Account> getAccountByAdmin() {
+		return accountRepository.findAll();
 	} 
+	
+	@PutMapping("/api/activate-account")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Account activateAccount(@RequestParam Account account) {
+		return accountRepository.save(account);
+	}
+	
+	@PutMapping("/api/update-account-by-admin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Account updateAccountByAdmin(@RequestParam Account account) {
+		return accountRepository.save(account);
+	}
+	
+	@DeleteMapping("/api/delete-account")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteAccountByAdmin(@RequestParam String username) {
+		accountRepository.deleteByUsername(username);
+	}
+	
 }

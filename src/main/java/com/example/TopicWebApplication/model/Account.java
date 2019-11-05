@@ -65,7 +65,6 @@ public class Account {
 	@Column(name = "active")
 	private Boolean active;
 	
-	@JsonProperty(access = Access.WRITE_ONLY)
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_role", joinColumns = @JoinColumn(referencedColumnName = "id_account"), 
 	inverseJoinColumns = @JoinColumn(referencedColumnName = "id_role"))
