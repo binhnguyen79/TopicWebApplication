@@ -1,6 +1,9 @@
 package com.example.TopicWebApplication.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -19,6 +22,7 @@ import com.example.TopicWebApplication.model.Role;
 import com.example.TopicWebApplication.model.RoleName;
 import com.example.TopicWebApplication.model.Topic;
 import com.example.TopicWebApplication.repository.AccountRepository;
+import com.example.TopicWebApplication.repository.RoleRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
 
 @RestController
@@ -26,6 +30,9 @@ public class RestAPIs {
 	
 	@Autowired
 	AccountRepository accountRepository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	@Autowired
 	TopicRepository topicRepository;
@@ -104,31 +111,39 @@ public class RestAPIs {
 		return accountRepository.findAll();
 	} 
 	
-	@PutMapping("/api/activate-account")
-	@PreAuthorize("hasRole('ADMIN')")
-	public Account activateAccount(@RequestParam Account account) {
-		
-		Account updateActiveAccount = accountRepository.findByUsername(account.getUsername());
-		
-		updateActiveAccount.setActive(!account.getActive());
-		return accountRepository.save(updateActiveAccount);
-	}
-	
 	@PutMapping("/api/change-role-user-by-admin")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Account changeRoleByAdmin(@RequestParam Account account) {
+	public Account changeRoleByAdmin(@RequestBody Account a) {
 		
-		for (Role r : account.getRoles()) {
-			if(r.getRole().equals(RoleName.ROLE_ADMIN)) {
-				r.setRole(RoleName.ROLE_USER);
-				return accountRepository.save(account);
-			} else if (r.getRole().equals(RoleName.ROLE_USER)) {
-				r.setRole(RoleName.ROLE_ADMIN);
-				return accountRepository.save(account);
-			}
+		Account updateAdminRoleAccount = accountRepository.findByUsername(a.getUsername());
+		
+		if (updateAdminRoleAccount.getRoles().size() <= 1) {
+			Set<Role> adminRoles = updateAdminRoleAccount.getRoles();
+			Optional<Role> admin = roleRepository.findByRole(RoleName.ROLE_ADMIN);
+			Role adminRole = admin.get();
+			adminRoles.add(adminRole);
+			updateAdminRoleAccount.setRoles(adminRoles);
+		} 
+		else if (updateAdminRoleAccount.getRoles().size() >= 2) {
+			Set<Role> adminRoles = new HashSet<>();
+			Optional<Role> admin = roleRepository.findByRole(RoleName.ROLE_USER);
+			Role adminRole = admin.get();
+			adminRoles.add(adminRole);
+			updateAdminRoleAccount.setRoles(adminRoles);
 		}
 		
-		return accountRepository.save(account);
+		return accountRepository.save(updateAdminRoleAccount);
+	}
+	
+	@PutMapping("/api/activate-account")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Account activateAccount(@RequestBody Account a) {
+		
+		System.out.println(a.toString());
+		Account updateActiveAccount = accountRepository.findByUsername(a.getUsername());
+		
+		updateActiveAccount.setActive(!a.getActive());
+		return accountRepository.save(updateActiveAccount);
 	}
 	
 }
