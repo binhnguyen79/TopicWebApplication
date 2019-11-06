@@ -52,19 +52,25 @@ public class AuthRestAPIs {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateAccount(@Valid @RequestBody LoginForm loginResquest) {
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginResquest.getUsername(), loginResquest.getPassword()));
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		Boolean isTrue = accountRepository.isTrueActiveByUsername(loginResquest.getUsername());
 		
-		String jwt = jwtProvider.generateJwtToken(authentication);
+		if (isTrue == true) {
+			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginResquest.getUsername(), loginResquest.getPassword()));
+			
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			
+			String jwt = jwtProvider.generateJwtToken(authentication);
+			
+			CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+			
+			JwtResponse headerResponse = new JwtResponse(jwt, customUserDetails.getUsername(), customUserDetails.getAuthorities());
+			
+			return ResponseEntity.ok(headerResponse);
+		} else {
+			return new ResponseEntity<>(new ResponseMessage("Your account have been BLOCK by ADMIN !!!"), HttpStatus.BAD_REQUEST);
+		}
 		
-		CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-		
-		JwtResponse headerResponse = new JwtResponse(jwt, customUserDetails.getUsername(), customUserDetails.getAuthorities());
-		
-		System.out.println("HeaderResponse: " + headerResponse.getAccessToken());
-		
-		return ResponseEntity.ok(headerResponse);
 	}
 	
 	@PostMapping("/signup")

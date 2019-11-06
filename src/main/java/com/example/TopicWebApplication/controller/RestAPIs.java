@@ -2,6 +2,8 @@ package com.example.TopicWebApplication.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.TopicWebApplication.model.Account;
+import com.example.TopicWebApplication.model.Role;
+import com.example.TopicWebApplication.model.RoleName;
 import com.example.TopicWebApplication.model.Topic;
 import com.example.TopicWebApplication.repository.AccountRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
@@ -102,20 +106,27 @@ public class RestAPIs {
 	
 	@PutMapping("/api/activate-account")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Account activateAccount(@RequestParam Account account) {
+	public Account activateAccount(@Valid @RequestParam Account account) {
+		
+		account.setActive(!account.getActive());
 		return accountRepository.save(account);
 	}
 	
-	@PutMapping("/api/update-account-by-admin")
+	@PutMapping("/api/change-role-user-by-admin")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Account updateAccountByAdmin(@RequestParam Account account) {
+	public Account changeRoleByAdmin(@Valid @RequestParam Account account) {
+		
+		for (Role r : account.getRoles()) {
+			if(r.getRole().equals(RoleName.ROLE_ADMIN)) {
+				r.setRole(RoleName.ROLE_USER);
+				return accountRepository.save(account);
+			} else if (r.getRole().equals(RoleName.ROLE_USER)) {
+				r.setRole(RoleName.ROLE_ADMIN);
+				return accountRepository.save(account);
+			}
+		}
+		
 		return accountRepository.save(account);
-	}
-	
-	@DeleteMapping("/api/delete-account")
-	@PreAuthorize("hasRole('ADMIN')")
-	public void deleteAccountByAdmin(@RequestParam String username) {
-		accountRepository.deleteByUsername(username);
 	}
 	
 }

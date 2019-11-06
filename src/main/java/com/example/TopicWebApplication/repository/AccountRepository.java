@@ -8,6 +8,10 @@ import com.example.TopicWebApplication.model.Account;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
+	public default Boolean isTrueActiveByUsername(String username) {
+		return findByUsername(username).getActive();
+	}
+	
 	Account findByUsername(String username);
 	Boolean existsByUsername(String username);
 	Boolean existsByEmail(String email);
