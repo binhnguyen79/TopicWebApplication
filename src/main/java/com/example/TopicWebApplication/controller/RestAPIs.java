@@ -106,15 +106,17 @@ public class RestAPIs {
 	
 	@PutMapping("/api/activate-account")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Account activateAccount(@Valid @RequestParam Account account) {
+	public Account activateAccount(@RequestParam Account account) {
 		
-		account.setActive(!account.getActive());
-		return accountRepository.save(account);
+		Account updateActiveAccount = accountRepository.findByUsername(account.getUsername());
+		
+		updateActiveAccount.setActive(!account.getActive());
+		return accountRepository.save(updateActiveAccount);
 	}
 	
 	@PutMapping("/api/change-role-user-by-admin")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Account changeRoleByAdmin(@Valid @RequestParam Account account) {
+	public Account changeRoleByAdmin(@RequestParam Account account) {
 		
 		for (Role r : account.getRoles()) {
 			if(r.getRole().equals(RoleName.ROLE_ADMIN)) {
