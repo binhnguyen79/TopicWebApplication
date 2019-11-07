@@ -5,9 +5,33 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.FlushModeType;
+import javax.persistence.LockModeType;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureQuery;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.metamodel.Metamodel;
 import javax.validation.Valid;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.procedure.ProcedureCall;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -74,17 +98,27 @@ public class RestAPIs {
 		return ResponseEntity.ok().body(updateAccount);
 	}
 	
-	@GetMapping("/api/get-topic")
 	public List<Topic> getTopicMainPage() {
 		
 		return topicRepository.findAll();
 	}
+
+	@GetMapping("/api/get-topic")
+	@SuppressWarnings("unchecked")
+	public Page<Topic> getTopicMainPage2(@RequestParam(defaultValue = "0") int page) {
+		
+		Sort sort = null;
+		sort = Sort.by("creation_day").descending();
+		Pageable pageable = PageRequest.of(page, 5, sort);
+		
+		return (Page<Topic>) topicRepository.findAllByTitle(pageable);
+	}
 	
-	@GetMapping("/api/get-topic-by-key")
+	@GetMapping("/api/search-topic-by-key")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public List<Topic> getTopicByKeyWord(@RequestParam String key) {
-		System.out.println(topicRepository.findByTitle(key).toString());
-		return topicRepository.findByTitle(key);
+		
+		return null;
 	}
 	
 	@SuppressWarnings("null")

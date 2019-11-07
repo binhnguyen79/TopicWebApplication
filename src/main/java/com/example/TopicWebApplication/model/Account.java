@@ -2,6 +2,7 @@ package com.example.TopicWebApplication.model;
 
 import java.util.Set;
 
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,9 +25,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Entity
 @Table(name = "account", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
