@@ -48,6 +48,7 @@ import com.example.TopicWebApplication.model.Topic;
 import com.example.TopicWebApplication.repository.AccountRepository;
 import com.example.TopicWebApplication.repository.RoleRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
+import com.example.TopicWebApplication.services.TopicServices;
 
 @RestController
 public class RestAPIs {
@@ -60,6 +61,9 @@ public class RestAPIs {
 	
 	@Autowired
 	TopicRepository topicRepository;
+	
+	@Autowired
+	TopicServices topicServices;
 	
 	@GetMapping("/api/test/user")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -104,14 +108,13 @@ public class RestAPIs {
 	}
 
 	@GetMapping("/api/get-topic")
-	@SuppressWarnings("unchecked")
-	public Page<Topic> getTopicMainPage2(@RequestParam(defaultValue = "0") int page) {
+	public List<Topic> getTopicMainPage2(@RequestParam(defaultValue = "0") int pageNumber, 
+			@RequestParam(defaultValue = "10") int pageSize,
+			@RequestParam(defaultValue = "creationDay") String sortBy) {
 		
-		Sort sort = null;
-		sort = Sort.by("creation_day").descending();
-		Pageable pageable = PageRequest.of(page, 5, sort);
+		List<Topic> results = topicServices.getAllTopic(pageNumber, pageSize, sortBy);
 		
-		return (Page<Topic>) topicRepository.findAllByTitle(pageable);
+		return results;
 	}
 	
 	@GetMapping("/api/search-topic-by-key")

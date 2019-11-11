@@ -33,5 +33,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, PagingAndSo
 //	@Query("SELECT t FROM topic t WHERE title REGEXP :title")
 //	List<Topic> searchTopics(String title);
 	
-	List<Topic> findAllByTitle(Pageable pageable);
+	Page<Topic> findAll(Pageable pageable);
 }

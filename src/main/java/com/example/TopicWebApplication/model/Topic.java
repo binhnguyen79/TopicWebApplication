@@ -37,7 +37,7 @@ public class Topic {
 	@Column(name = "title")
 	private String title;
 	
-	@Column(name = "content", length = (int) Long.MAX_VALUE)
+	@Column(name = "content")
 	private String content;
 	
 	@Column(name = "creation_day")
