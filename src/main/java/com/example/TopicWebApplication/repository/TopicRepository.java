@@ -27,11 +27,14 @@ public interface TopicRepository extends JpaRepository<Topic, Long>, PagingAndSo
 	@Query("SELECT t FROM Topic t ORDER BY creation_day DESC")
 	List<Topic> findAll();
 	
-	@Query("SELECT t FROM Topic t WHERE created_by = :createdBy ORDER BY creation_day DESC")
-	List<Topic> findTopics(Long createdBy);
+//	@Query("SELECT t FROM Topic t WHERE created_by = :createdBy ORDER BY creation_day DESC")
+//	List<Topic> findTopics(Long createdBy);
 	
 //	@Query("SELECT t FROM topic t WHERE title REGEXP :title")
 //	List<Topic> searchTopics(String title);
 	
 	Page<Topic> findAll(Pageable pageable);
+
+	@Query("SELECT t FROM Topic t WHERE created_by = :createdby ORDER BY creation_day DESC")
+	List<Topic> findTopicByCreatedBy(Long createdby);
 }

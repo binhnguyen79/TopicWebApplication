@@ -130,14 +130,7 @@ public class RestAPIs {
 	public List<Topic> getTopicForUser(@RequestParam String username) {
 
 		Account account = accountRepository.findByUsername(username);
-		List<Topic> tempList = topicRepository.findTopics(account.getAccountId());
-		List<Topic> result = null;
-		
-		for (int i = 0; i < tempList.size(); i++) {
-			if(tempList.get(i).getCreatedBy() == account.getAccountId()) {
-				 result.add(tempList.get(i));
-			}
-		}
+		List<Topic> result = topicRepository.findTopicByCreatedBy(account.getAccountId());
 		
 		return result;
 	}
