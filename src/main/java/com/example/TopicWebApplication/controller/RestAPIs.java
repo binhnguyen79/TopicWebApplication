@@ -1,41 +1,25 @@
 package com.example.TopicWebApplication.controller;
 
+import java.awt.TextArea;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.metamodel.Metamodel;
 import javax.validation.Valid;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.procedure.ProcedureCall;
+import org.hibernate.type.LocalDateTimeType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.http.HttpStatus;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -124,7 +108,6 @@ public class RestAPIs {
 		return null;
 	}
 	
-	@SuppressWarnings("null")
 	@GetMapping("/api/my-topics")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public List<Topic> getTopicForUser(@RequestParam String username) {
@@ -169,11 +152,41 @@ public class RestAPIs {
 	@PreAuthorize("hasRole('ADMIN')")
 	public Account activateAccount(@RequestBody Account a) {
 		
-		System.out.println(a.toString());
 		Account updateActiveAccount = accountRepository.findByUsername(a.getUsername());
 		
 		updateActiveAccount.setActive(!a.getActive());
 		return accountRepository.save(updateActiveAccount);
 	}
+	
+	
+	@PostMapping("/api/create-topic")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public Topic createTopic(@RequestParam String title, @RequestParam String content, @RequestParam String username) {
+		
+		LocalDateTime dateTime = LocalDateTime.now();
+		
+		Account user = accountRepository.findByUsername(username);
+		
+		Topic newTopic = new Topic(title, content, dateTime, user.getAccountId());
+		
+		return topicRepository.save(newTopic);
+	}
+	
+	@GetMapping("/api/is-true-owner")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public boolean isTrueOwner(@RequestParam String username, @RequestParam String id) {
+		
+		Account user = accountRepository.findByUsername(username);
+		
+		
+		Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
+		if (topic.get().getCreatedBy().equals(user.getAccountId())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+		
 	
 }

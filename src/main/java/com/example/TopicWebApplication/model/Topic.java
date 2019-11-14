@@ -1,6 +1,9 @@
 package com.example.TopicWebApplication.model;
 
+import java.awt.TextArea;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +16,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.TemporalType;
+import javax.print.attribute.standard.DateTimeAtCreation;
+
+import org.dom4j.Text;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.jpa.repository.Temporal;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,19 +48,28 @@ public class Topic {
 	
 	@Column(name = "content")
 	private String content;
-	
+
 	@Column(name = "creation_day")
-	private Date creationDay;
+	private LocalDateTime creationDay;
 	
 	@Column(name = "created_by")
 	private Long createdBy;
 	
 	@Column(name = "state")
+	@ColumnDefault(value = "1")
 	private int state;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "comment_topic", joinColumns = @JoinColumn(referencedColumnName = "id_topic"
 		), inverseJoinColumns = @JoinColumn(referencedColumnName = "id_comment"))
 	private Set<Comment> commentId;
+	
+	public Topic(String title, String content, LocalDateTime creationDay, long createdBy) {
+		super();
+		this.title = title;
+		this.content = content;
+		this.creationDay = creationDay;
+		this.createdBy = createdBy;
+	}
 	
 }
