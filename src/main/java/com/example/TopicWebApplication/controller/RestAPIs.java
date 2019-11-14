@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.TopicWebApplication.model.Account;
+import com.example.TopicWebApplication.model.Comment;
 import com.example.TopicWebApplication.model.Role;
 import com.example.TopicWebApplication.model.RoleName;
 import com.example.TopicWebApplication.model.Topic;
 import com.example.TopicWebApplication.repository.AccountRepository;
+import com.example.TopicWebApplication.repository.CommentRepository;
 import com.example.TopicWebApplication.repository.RoleRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
 import com.example.TopicWebApplication.services.TopicServices;
@@ -45,6 +47,9 @@ public class RestAPIs {
 	
 	@Autowired
 	TopicRepository topicRepository;
+	
+	@Autowired
+	CommentRepository commentRepository;
 	
 	@Autowired
 	TopicServices topicServices;
@@ -187,6 +192,23 @@ public class RestAPIs {
 		}
 	}
 	
+	@PostMapping("/api/submit-comment")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public Topic submitComment(@RequestParam String id, @RequestParam String comment, @RequestParam String username) {
+		System.out.println("request :" + id + " " + comment + " " + username);
 		
+		LocalDateTime dateTime = LocalDateTime.now();
+		
+		Account user = accountRepository.findByUsername(username);
+		
+		Comment c = new Comment(comment, dateTime, user.getAccountId(), 1);
+		commentRepository.save(c);
+		
+		Optional<Topic> t = topicRepository.findById(Long.parseLong(id));
+		Set<Comment> sc = t.get().getCommentId();
+		sc.add(c);
+		
+		return topicRepository.save(t.get());
+	}
 	
 }
