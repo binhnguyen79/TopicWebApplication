@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.validation.Valid;
 
@@ -207,7 +208,10 @@ public class RestAPIs {
 		Optional<Topic> t = topicRepository.findById(Long.parseLong(id));
 		Set<Comment> sc = t.get().getCommentId();
 		sc.add(c);
-		
+		Set<Comment> tSet = topicServices.sortByDateListComment(sc);
+
+		t.get().setCommentId(tSet);
+			
 		return topicRepository.save(t.get());
 	}
 	
