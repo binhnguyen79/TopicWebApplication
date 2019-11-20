@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -31,11 +32,14 @@ import com.example.TopicWebApplication.model.Comment;
 import com.example.TopicWebApplication.model.Role;
 import com.example.TopicWebApplication.model.RoleName;
 import com.example.TopicWebApplication.model.Topic;
+import com.example.TopicWebApplication.model.TrueComment;
 import com.example.TopicWebApplication.repository.AccountRepository;
 import com.example.TopicWebApplication.repository.CommentRepository;
 import com.example.TopicWebApplication.repository.RoleRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
 import com.example.TopicWebApplication.services.TopicServices;
+
+import lombok.NonNull;
 
 @RestController
 public class RestAPIs {
@@ -77,7 +81,7 @@ public class RestAPIs {
 	
 	@PutMapping("/api/update-account")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
+	public ResponseEntity<Account> updateAccount(@NonNull @RequestBody Account account) {
 		
 		Account updateAccount = accountRepository.findByUsername(account.getUsername());
 		
@@ -184,7 +188,6 @@ public class RestAPIs {
 		
 		Account user = accountRepository.findByUsername(username);
 		
-		
 		Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
 		if (topic.get().getCreatedBy().equals(user.getAccountId())) {
 			return true;
@@ -196,23 +199,40 @@ public class RestAPIs {
 	@PostMapping("/api/submit-comment")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public Topic submitComment(@RequestParam String id, @RequestParam String comment, @RequestParam String username) {
-		System.out.println("request :" + id + " " + comment + " " + username);
-		
 		LocalDateTime dateTime = LocalDateTime.now();
 		
 		Account user = accountRepository.findByUsername(username);
 		
-		Comment c = new Comment(comment, dateTime, user.getAccountId(), 1);
+		Comment c = new Comment(comment, dateTime, user.getAccountId(), 3);
 		commentRepository.save(c);
 		
 		Optional<Topic> t = topicRepository.findById(Long.parseLong(id));
 		Set<Comment> sc = t.get().getCommentId();
 		sc.add(c);
-		Set<Comment> tSet = topicServices.sortByDateListComment(sc);
-
-		t.get().setCommentId(tSet);
-			
+		
 		return topicRepository.save(t.get());
 	}
 	
+	@GetMapping("/api/get-list-is-true-comment")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public List<Comment> getListTrueComments(@RequestParam String username, @RequestParam String id) {
+		List<Comment> listResult = new ArrayList<Comment>();
+		
+		Account user = accountRepository.findByUsername(username);
+		
+		Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
+		Set<Comment> set = topic.get().getCommentId();
+			
+		for (Comment comment : set) {
+			if (comment.getCreated_by() == user.getAccountId()) {
+				comment.setState(1);
+			} else {
+				comment.setState(0);
+			}
+			
+			listResult.add(comment);
+		}
+		
+		return listResult;
+	}
 }

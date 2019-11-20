@@ -36,20 +36,20 @@ public class TopicServices {
 		}
 	}
 	
-	public Set<Comment> sortByDateListComment(Set<Comment> set) {
-		
-		TreeSet<Comment> tSet = new TreeSet<Comment>(new CreationDateInComparator());
-		for (Comment comment : set) {
-			tSet.add(comment);
-		}
-		
-		return tSet;
-	}
-	
-	class CreationDateInComparator implements Comparator<Comment> {
-		@Override
-		public int compare(Comment o1, Comment o2) {
-			return o2.getCreation_day().compareTo(o1.getCreation_day());
-		}
-	}
+//	public Set<Comment> sortByDateListComment(Set<Comment> set) {
+//		
+//		TreeSet<Comment> tSet = new TreeSet<Comment>(new CreationDateInComparator());
+//		for (Comment comment : set) {
+//			tSet.add(comment);
+//		}
+//		
+//		return tSet;
+//	}
+//	
+//	class CreationDateInComparator implements Comparator<Comment> {
+//		@Override
+//		public int compare(Comment o1, Comment o2) {
+//			return o2.getCreation_day().compareTo(o1.getCreation_day());
+//		}
+//	}
 }

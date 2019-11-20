@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.TemporalType;
 import javax.print.attribute.standard.DateTimeAtCreation;
@@ -61,6 +62,7 @@ public class Topic {
 	private int state;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
+	@OrderBy(value = "creation_day DESC")
 	@JoinTable(name = "comment_topic", joinColumns = @JoinColumn(referencedColumnName = "id_topic"
 		), inverseJoinColumns = @JoinColumn(referencedColumnName = "id_comment"))
 	private Set<Comment> commentId;
