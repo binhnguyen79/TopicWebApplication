@@ -106,7 +106,13 @@ public class RestAPIs {
 			@RequestParam(defaultValue = "10") int pageSize,
 			@RequestParam(defaultValue = "creationDay") String sortBy) {
 		
-		List<Topic> results = topicServices.getAllTopic(pageNumber, pageSize, sortBy);
+		List<Topic> temList = topicServices.getAllTopic(pageNumber, pageSize, sortBy);
+		List<Topic> results = new ArrayList<Topic>();
+		for (Topic topic : temList) {
+			if (topic.getState() != 5) {
+				results.add(topic);
+			}
+		}
 		
 		return results;
 	}
@@ -235,4 +241,27 @@ public class RestAPIs {
 		
 		return listResult;
 	}
+	
+	@PutMapping("/api/update-topic")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public Topic updateTopic(@RequestBody Topic topic) {
+		
+		return topicRepository.save(topic);
+	}
+	
+	@PutMapping("/api/update-comment")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public Comment updateComment(@RequestBody Comment comment) {
+		
+		return commentRepository.save(comment);
+	}
+	
+	@PostMapping("/api/unlock-or-lock-topic")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public Topic unlockAndLockTopic(@RequestParam String id) {
+		Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
+		topic.get().setState(5);
+		return topicRepository.save(topic.get());
+	}
+	
 }
