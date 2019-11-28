@@ -25,6 +25,8 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.oauth2.client.userinfo.CustomUserTypesOAuth2UserService;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.example.TopicWebApplication.jwt.JwtAuthEntryPoint;
@@ -45,16 +47,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    private CustomUserTypesOAuth2UserService customOAuth2UserService;
 //
 //    @Autowired
-//    private OAuth2AuthenticationException oAuth2AuthenticationException;
+//    private AuthenticationFailureHandler oAuth2AuthenticationException;
 //
 //    @Autowired
-//    private OAuth2AuthenticationToken oAuth2AuthenticationToken;
-//    
-//    @Autowired
-//    private HttpSessionOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
-
-	
-	@Autowired
+//    private AuthenticationSuccessHandler oAuth2AuthenticationToken;
+    
+    @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
 
     @Bean
@@ -73,10 +71,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 	
-//	@Bean
-//	public HttpSessionOAuth2AuthorizationRequestRepository httpSessionOAuth2AuthorizationRequestRepository() {
-//		return new HttpSessionOAuth2AuthorizationRequestRepository();
-//	}
+	@Bean
+	public HttpSessionOAuth2AuthorizationRequestRepository httpSessionOAuth2AuthorizationRequestRepository() {
+		return new HttpSessionOAuth2AuthorizationRequestRepository();
+	}
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -103,11 +101,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		http.cors().and().csrf().disable()
 			.authorizeRequests()
-	        .antMatchers("/api/auth/**").permitAll()
+	        .antMatchers("/api/auth/**", "/oauth2/**").permitAll()
 	        .antMatchers("/api/get-topic").permitAll()
 	        .anyRequest().authenticated()
-	        .and()
-	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+//	        .and()
+//	        .oauth2Login()
+//	        .authorizationEndpoint()
+//            .baseUri("/oauth2/authorize")
+//            .authorizationRequestRepository(httpSessionOAuth2AuthorizationRequestRepository())
+//            .and()
+//	        .redirectionEndpoint()
+//	            .baseUri("/oauth2/callback/*")
+//	            .and()
+//	        .userInfoEndpoint()
+//	            .userService(customOAuth2UserService)
+//	            .and()
+//	        .successHandler(oAuth2AuthenticationToken)
+//	        .failureHandler(oAuth2AuthenticationException)
+//	        .and()
+//	        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
 	        .and()
 	        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

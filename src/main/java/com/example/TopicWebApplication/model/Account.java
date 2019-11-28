@@ -45,7 +45,6 @@ public class Account {
 	private Long accountId;
 	
 	@Column(name = "display_name")
-	@NotEmpty(message = "Please provide your Username")
 	@Length(max = 50)
 	private String username;
 	
@@ -53,27 +52,26 @@ public class Account {
 	private String name;
 	
 	@Column(name = "email")
-	@NotEmpty(message = "Please provide your email")
-	@Email(message = "Please provide valid email")
 	private String email;
 	
 	@Column(name = "password")
 	@JsonProperty(access = Access.WRITE_ONLY)
-	@NotEmpty(message = "Please enter your password")
-	@Length(min = 5, message = "Please enter password at least 8 characters")
 	private String password;
 	
 	@Column(name = "active")
 	private Boolean active;
+
+	@Column(name = "provider")
+    private AuthProvider provider;
+
+    private String providerId;
 	
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "account_role", joinColumns = @JoinColumn(referencedColumnName = "id_account"), 
 	inverseJoinColumns = @JoinColumn(referencedColumnName = "id_role"))
 	private Set<Role> roles;
 
-	public Account(@NotEmpty(message = "Please provide your Username") @Length(max = 50) String username, String name,
-			@NotEmpty(message = "Please provide your email") @Email(message = "Please provide valid email") String email,
-			@NotEmpty(message = "Please enter your password") @Length(min = 5, message = "Please enter password at least 8 characters") String password) {
+	public Account(String username, String name, String email, String password) {
 		super();
 		this.username = username;
 		this.name = name;
