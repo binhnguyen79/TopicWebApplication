@@ -13,8 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.example.TopicWebApplication.model.Account;
 import com.example.TopicWebApplication.model.Comment;
+import com.example.TopicWebApplication.model.Role;
+import com.example.TopicWebApplication.model.RoleName;
 import com.example.TopicWebApplication.model.Topic;
+import com.example.TopicWebApplication.repository.AccountRepository;
 import com.example.TopicWebApplication.repository.TopicRepository;
 
 @Service
@@ -22,6 +26,9 @@ public class TopicServices {
 	
 	@Autowired
 	TopicRepository topicRepository;
+	
+	@Autowired
+	AccountRepository accountRepository;
 	
 	public List<Topic> getAllTopic(int pageNumber, int pageSize, String sortBy) {
 		
@@ -34,6 +41,21 @@ public class TopicServices {
 		} else {
 			return new ArrayList<Topic>();
 		}
+	}
+	
+	public Boolean userHasRoleAdmin(String username) {
+		
+		Account user = accountRepository.findByUsername(username);
+		
+		for (Role role : user.getRoles()) {
+			if (RoleName.ROLE_ADMIN.equals(role.getRole())) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		
+		return null;
 	}
 	
 //	public Set<Comment> sortByDateListComment(Set<Comment> set) {

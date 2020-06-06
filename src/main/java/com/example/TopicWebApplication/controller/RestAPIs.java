@@ -63,18 +63,6 @@ public class RestAPIs {
 	@Autowired
 	TopicServices topicServices;
 	
-	@GetMapping("/test/user")
-	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public String userAccess() {
-		return ">>> User Contents!";
-	}
-	
-	@GetMapping("/test/admin")
-	@PreAuthorize("hasRole('ADMIN')")
-	public String adminAccess() {
-		return ">>> Admin Contents";
-	}
-	
 	@GetMapping("/get-user-info")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	public ResponseEntity<Account> getAccount(@RequestParam String username) {
@@ -233,7 +221,7 @@ public class RestAPIs {
 		Optional<Topic> topic = topicRepository.findById(Long.valueOf(id));
 		Set<Comment> set = topic.get().getCommentId();
 			
-		if (userHasRoleAdmin(username)) {
+		if (topicServices.userHasRoleAdmin(username)) {
 			for (Comment comment : set) {
 				comment.setState(1);
 				listResult.add(comment);
@@ -295,41 +283,32 @@ public class RestAPIs {
 	@GetMapping("/get-topic-for-admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<Topic> getTopicForAdmin(@RequestParam String username) {
-		if (userHasRoleAdmin(username) == true) {
+		System.err.println(username);
+		if (topicServices.userHasRoleAdmin(username) == true) {
+			System.out.println(topicServices.userHasRoleAdmin(username));
 			return topicRepository.findAll();
 		}
 		
-		return null;
-	}
-	
-	public Boolean userHasRoleAdmin(String username) {
-		
-		Account user = accountRepository.findByUsername(username);
-		
-		for (Role role : user.getRoles()) {
-			if (RoleName.ROLE_ADMIN.equals(role.getRole())) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		
-		return null;
+		return topicRepository.findAll();
 	}
 	
 	@GetMapping("/get-comment-for-admin")
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<Comment> getCommentsForAdmin(@RequestParam String username) {
-		if (userHasRoleAdmin(username) == true) {
+		System.out.println(username);
+		if (topicServices.userHasRoleAdmin(username) == true) {
 			return commentRepository.findAll();
 		}
-		return null;
+		return commentRepository.findAll();
 	}
 	
 	@DeleteMapping("/delete-comment")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteComment(@RequestParam String id) {
 		Optional<Comment> comment = commentRepository.findById(Long.valueOf(id));
+		
+		
+		
 		commentRepository.delete(comment.get());
 	}
 	

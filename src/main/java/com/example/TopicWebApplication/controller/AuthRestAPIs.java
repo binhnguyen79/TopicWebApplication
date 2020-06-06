@@ -52,8 +52,9 @@ public class AuthRestAPIs {
 	
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateAccount(@Valid @RequestBody LoginForm loginResquest) {
-		
+
 		Boolean isTrue = accountRepository.isTrueActiveByUsername(loginResquest.getUsername());
+		System.out.println(isTrue);
 		
 		if (isTrue == true) {
 			Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginResquest.getUsername(), loginResquest.getPassword()));
